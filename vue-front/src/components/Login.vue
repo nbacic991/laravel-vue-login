@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import { loginUrl } from '../config.js'
+import { loginUrl, getHeader, userUrl } from '../config.js'
 import { client_id, client_secret } from '../env.js'
 
 export default {
@@ -42,13 +42,25 @@ export default {
         password: this.login.password,
         scope: ''
       }
+      const authUser = {}
       this.$http.post(loginUrl, postData)
       .then(response => {
-        console.log(response)
-        // this.$http.get('http://dev.laravel.loc/api/user', { headers: header })
-        //   .then(response => {
-        //     console.log(response)
-        // })
+        if(response.status === 200) {
+          console.log('Oauth token', response)
+          
+          authUser.access_token = response.data.access_token
+          authUser.refresh_token = response.data.refresh_token
+          window.localStorage.setItem('authUser', JSON.stringify(authUser))
+          
+          this.$http.get(userUrl, {headers: getHeader()})
+          .then(response => {
+            console.log('user object', response)
+            authUser.email = response.body.email
+            authUser.name = response.body.name
+            window.localStorage.setItem('authUser', JSON.stringify(authUser))
+            this.$router.push({name: 'dashboard'})
+          })
+        }
       })
     }
   }
