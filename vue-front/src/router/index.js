@@ -16,7 +16,8 @@ export default new Router({
     {
       path: '/dashboard',
       name: 'dashboard',
-      component: DashboardPage
+      component: DashboardPage,
+      meta: { requiresAuth: true }
     },
   ]
 })

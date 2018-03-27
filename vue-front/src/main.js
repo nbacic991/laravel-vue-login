@@ -25,6 +25,21 @@ Vue.use(Vuetify, {
 Vue.use(VueResource)
 Vue.config.productionTip = false
 
+router.beforeEach((to, from, next) => {
+  if(to.meta.requiresAuth) {
+    const authUser = JSON.parse(window.localStorage.getItem('authUser'))
+    
+    if (authUser && authUser.access_token) {
+      next()
+    } else {
+      next({
+        name: 'home'
+      })
+    }
+  }
+  next()
+})
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

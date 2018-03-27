@@ -46,7 +46,7 @@ export default {
       this.$http.post(loginUrl, postData)
       .then(response => {
         if(response.status === 200) {
-          console.log('Oauth token', response)
+          // console.log('Oauth token', response)
           
           authUser.access_token = response.data.access_token
           authUser.refresh_token = response.data.refresh_token
@@ -54,7 +54,8 @@ export default {
           
           this.$http.get(userUrl, {headers: getHeader()})
           .then(response => {
-            console.log('user object', response)
+            // console.log('user object', response)
+            
             authUser.email = response.body.email
             authUser.name = response.body.name
             window.localStorage.setItem('authUser', JSON.stringify(authUser))
