@@ -28,10 +28,14 @@
             </div>
           </li>
         </ul>
-        <div class="form-inline my-2 my-lg-0">
-          <v-btn :to="{name: 'login'}" type="submit">Login</v-btn>
-          <v-btn to >Logout</v-btn>
-        </div>
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="/login">Login</a>
+          </li>
+          <li class="nav-item">
+            <a @click="handleLogout()" class="nav-link curs">Logout</a>
+          </li>
+        </ul>
       </div>
     </nav>
   </div>
@@ -46,5 +50,20 @@ export default {
       userStore: state => state.userStore
     })
   },
+  methods: {
+    handleLogout() {
+      this.$store.dispatch('clearAuthUser')
+      window.localStorage.removeItem('authUser')
+      this.$router.push('/')
+    }
+  }
 }
 </script>
+
+<style lang="scss">
+.curs {
+  &:hover {
+    cursor: pointer;
+  }
+}
+</style>
