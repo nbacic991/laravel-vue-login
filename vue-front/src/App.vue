@@ -1,12 +1,29 @@
 <template>
-  <v-container id="app">
-    <router-view/>
-  </v-container>
+  <div>
+    <app-menu></app-menu>
+    <v-container id="app">
+      <router-view/>
+    </v-container>
+  </div>
 </template>
 
 <script>
+import { mapState } from 'vuex'
+import TopMenu from './components/TopMenu'
+
 export default {
-  
+  created() {
+    const userObj = JSON.parse(window.localStorage.getItem('authUser'))
+    this.$store.dispatch('setUserObject', userObj)
+  },
+  computed: {
+    ...mapState({
+      userStore: state => state.userStore
+    })
+  },
+  components: {
+    appMenu: TopMenu
+  }
 }
 </script>
 

@@ -6,6 +6,7 @@ import VueResource from 'vue-resource'
 import Vuetify from 'vuetify'
 import 'vuetify/dist/vuetify.min.css'
 import router from './router'
+import {store} from './store/store.js'
 
 import colors from 'vuetify/es5/util/colors'
 
@@ -44,6 +45,7 @@ router.beforeEach((to, from, next) => {
 new Vue({
   el: '#app',
   router,
+  store,
   components: { App },
   template: '<App/>'
 })

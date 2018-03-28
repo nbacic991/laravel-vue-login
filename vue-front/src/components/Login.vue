@@ -1,5 +1,5 @@
 <template>
-  <div class="wrapper" id="home-wrapper">
+  <div class="wrapper" id="login-wrapper">
     <v-layout row>
       <v-flex xs12 sm6 offset-sm3>
         <form @submit.prevent="handleLoginFormSubmit">
@@ -22,6 +22,7 @@
 <script>
 import { loginUrl, getHeader, userUrl } from '../config.js'
 import { client_id, client_secret } from '../env.js'
+import { mapState } from 'vuex'
 
 export default {
   data() {
@@ -31,6 +32,11 @@ export default {
         password: 'password'
       }
     }
+  },
+  computed: {
+    ...mapState({
+      userStore: state => state.userStore
+    })
   },
   methods: {
     handleLoginFormSubmit() {
@@ -59,6 +65,7 @@ export default {
             authUser.email = response.body.email
             authUser.name = response.body.name
             window.localStorage.setItem('authUser', JSON.stringify(authUser))
+            this.$store.dispatch('setUserObject', authUser)
             this.$router.push({name: 'dashboard'})
           })
         }

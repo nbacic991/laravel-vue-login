@@ -1,20 +1,16 @@
 <template>
   <div class="hello">
-    <app-login></app-login>
+    {{ msg }}
   </div>
 </template>
 
 <script>
-import Login from './Login'
 
 export default {
   data () {
     return {
       msg: 'Welcome to Your Vue.js App'
     }
-  },
-  components: {
-    appLogin: Login
   }
 }
 </script>
