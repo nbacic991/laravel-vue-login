@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import Home from '@/components/Home'
 import Login from '@/components/Login'
 import DashboardPage from '@/components/pages/DashboardPage'
+import ChatPage from '@/components/pages/ChatPage'
 
 Vue.use(Router)
 
@@ -25,5 +26,11 @@ export default new Router({
       component: DashboardPage,
       meta: { requiresAuth: true }
     },
+    {
+      path: '/chat',
+      name: 'chat',
+      component: ChatPage,
+      meta: { requiresAuth: true }
+    }
   ]
 })

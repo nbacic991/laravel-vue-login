@@ -1,6 +1,8 @@
 <template>
   <div class="wrapper" id="dashboard-wrapper">
-    <h2>Welcome to dashboard</h2>
+    <section class="heading">
+        <h1 class="page-title">Dashboard</h1>
+    </section>
   </div>
 </template>
 
