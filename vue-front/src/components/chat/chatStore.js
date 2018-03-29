@@ -1,5 +1,9 @@
 import Vue from 'vue'
-import { userListUrl, getHeader } from '../../config'
+import { 
+    userListUrl,
+    getHeader,
+    getUserConversationUrl,
+    saveChatMessageUrl } from '../../config'
 
 const state = {
   userList: {},
@@ -16,6 +20,9 @@ const mutations = {
   },
   SET_CONVERSATION(state, conversation) {
     state.conversation = conversation
+  },
+  ADD_CHAT_TO_CONVERSATION(state, chat) {
+    state.conversation.push(chat)
   }
 }
 
@@ -32,13 +39,19 @@ const actions = {
   },
   setCurrentChatUser({commit}, user) {
     commit('SET_CURRENT_CHAT_USER', user)
-    // let postData = {id: user.id}
-    // return Vue.http.post(getUserConversationUrl, postData, {headers: getHeader()})
-    //   .then(response => {
-    //     console.log(response)
-    //     commit('SET_CURRENT_CHAT_USER', user)
-    //     // commit('SET_CONVERSATION', response.body.data)
-    // })
+    let postData = {id: user.id}
+    return Vue.http.post(getUserConversationUrl, postData, {headers: getHeader()})
+      .then(response => {
+        console.log(response.body.data)
+        commit('SET_CURRENT_CHAT_USER', user)
+        commit('SET_CONVERSATION', response.body.data)
+    })
+  },
+  addNewChatToConversation({commit}, postData) {
+    return Vue.http.post(saveChatMessageUrl, postData, {headers: getHeader()})
+      .then(response => {
+        commit('ADD_CHAT_TO_CONVERSATION', response.body.data)
+      })
   }
 }
 
