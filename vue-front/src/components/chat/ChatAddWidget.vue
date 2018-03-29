@@ -1,43 +1,81 @@
 <template>
   <div id="chat-add-widget">
-    <form @submit.prevent="handleAddChat">
+    <form v-on:submit.prevent="handleAddChat()">
       <div class="form-group">
-        <input type="text" placeholder="Enter Your text" class="form-control" v-model="message">
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Type your text"
+          v-model="message"
+        >
       </div>
     </form>
   </div>
 </template>
 
 <script>
-import { mapState } from 'vuex'
-
-export default {
-  computed: {
-    ...mapState({
-      chatStore: state => state.chatStore
-    })
-  },
-  data() {
-    return {
-      message: null
-    }
-  },
-  methods: {
-    handleAddChat() {
-      if(this.message !== null) {
-        let postData = {
-          'receiver_id': this.chatStore.currentChatUser.id,
-          'chat': this.message
+  import {mapState} from 'vuex'
+  import Pusher from 'pusher-js'
+  export default {
+    created () {
+      this.pusher = new Pusher('285ecac35321657fa4eb', {
+        encrypted: true,
+        cluster: 'eu'
+      })
+      let that = this
+      this.channel = this.pusher.subscribe('chat_channel')
+      this.channel.bind('chat_saved', function (data) {
+        that.$emit('incoming_chat', data)
+      })
+      this.$on('incoming_chat', function (chatMessage) {
+        this.incomingChat(chatMessage)
+      })
+    },
+    computed: {
+      ...mapState({
+        chatStore: state => state.chatStore,
+        userStore: state => state.userStore
+      })
+    },
+    data () {
+      return {
+        message: null,
+        pusher: null,
+        channel: null
+      }
+    },
+    methods: {
+      handleAddChat () {
+        if (this.message !== null) {
+          let postData = {
+            'receiver_id': this.chatStore.currentChatUser.id,
+            'chat': this.message
+          }
+          this.$store.dispatch('addNewChatToConversation', postData)
+            .then(response => {
+              this.message = null
+              let element = document.getElementById('chat-widget-wrapper')
+              element.scrollIntoView(false)
+            })
         }
-
-        this.$store.dispatch('addNewChatToConversation', postData)
-          .then(response => {
-            this.message = null
-          })
+      },
+      incomingChat (chatMessage) {
+        console.log('chatMessage', chatMessage)
+        if (this.chatStore.currentChatUser.id === chatMessage.message.sender_id) {
+          console.log(chatMessage.message.receiver.email, this.userStore.authUser.email)
+          if (chatMessage.message.receiver.email === this.userStore.authUser.email) {
+            this.$store.dispatch('newIncomingChat', chatMessage.message)
+              .then(res => {
+                let element = document.getElementById('chat-widget-wrapper')
+                element.scrollIntoView(false)
+              })
+          } else {
+            console.log('Message to some other user from the selected sender')
+          }
+        }
       }
     }
   }
-}
 </script>
 
 <style lang="scss">

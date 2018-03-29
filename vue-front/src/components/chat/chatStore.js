@@ -52,6 +52,9 @@ const actions = {
       .then(response => {
         commit('ADD_CHAT_TO_CONVERSATION', response.body.data)
       })
+  },
+  newIncomingChat({commit}, message) {
+    commit('ADD_CHAT_TO_CONVERSATION', message)
   }
 }
 
